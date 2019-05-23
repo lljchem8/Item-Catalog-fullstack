@@ -8,8 +8,19 @@ app = Flask(__name__)
 
 @app.route('/')
 @app.route('/catalog')
-def shwoCatalog():
+def showCatalog():
     return "show all kinds of catalog"
+
+
+@app.route('/catalog/<string:name>')
+@app.route('/catalog/<string:name>/items')
+def showCatalogName(name):
+    return "catalog {}".format(name)
+
+
+@app.route('/catalog/<string:catName>/<string:itemName>')
+def showitemName(catName, itemName):
+    return "catname {}, itemName {}".format(catName, itemName)
 
 
 if __name__ == '__main__':
