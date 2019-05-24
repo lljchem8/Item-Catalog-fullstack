@@ -53,6 +53,36 @@ def editCatalog(name):
 def showitemName(catName, itemName):
     return "catname {}, itemName {}".format(catName, itemName)
 
+# create a new item
+
+
+@app.route('/catalog/<string:catName>/new', methods=['GET', 'POST'])
+def newItem(catName):
+    if (request.method == 'POST'):
+        return "added a new item"
+    else:
+        return "not a valid post"
+
+# edit an item
+
+
+@app.route('/catalog/<string:catName>/<string:itemName>/edit', methods=['GET', 'POST'])
+def editItem(catName, itemName):
+    if (request.method == 'POST'):
+        return "the item has been edited"
+    else:
+        return "not a valid post"
+
+# delete an item
+
+
+@app.route('/catalog/<string:catName>/<string:itemName>/delete', methods=['GET', 'POST'])
+def deleteItem(catName, itemName):
+    if (request.method == 'POST'):
+        return "the item has been deleted"
+    else:
+        return "not a valid post"
+
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
