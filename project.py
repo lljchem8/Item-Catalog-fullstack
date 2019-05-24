@@ -48,6 +48,8 @@ def editCatalog(name):
     else:
         return "not a valid request"
 
+# show the item
+
 
 @app.route('/catalog/<string:catName>/<string:itemName>')
 def showitemName(catName, itemName):
