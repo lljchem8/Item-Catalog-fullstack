@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
 
-from flask import Flask, request
+from flask import Flask, request, render_template
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from database_setup import Catalog, Item, Base
+
+engine = create_engine('sqlite:///catalog.db')
+Base.metadata.bind = engine
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
 
 
 app = Flask(__name__)
@@ -9,7 +18,11 @@ app = Flask(__name__)
 @app.route('/')
 @app.route('/catalog')
 def showCatalog():
-    return "show all kinds of catalog"
+    catalogs = session.query(Catalog).all()
+    items = session.query(Item.itemName, Catalog.catalogName).filter(
+        Item.catalog_id == Catalog.id).order_by(Item.id.desc()).limit(3)
+
+    return render_template("catalog.html", catalogs=catalogs, items=items)
 
 # show all catalog
 

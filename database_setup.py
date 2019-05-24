@@ -10,13 +10,13 @@ class Catalog(Base):
     __tablename__ = 'catalog'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    catalogName = Column(String(250), nullable=False)
 
     @property
     def serialize(self):
         """Return object data in easily serializeable format"""
         return {
-            'name': self.name,
+            'catalogName': self.name,
             'id': self.id,
         }
 
@@ -24,7 +24,7 @@ class Catalog(Base):
 class Item(Base):
     __tablename__ = 'item'
 
-    name = Column(String(80), nullable=False)
+    itemName = Column(String(80), nullable=False)
     id = Column(Integer, primary_key=True)
     description = Column(String(250))
     catalog_id = Column(Integer, ForeignKey('catalog.id'))
@@ -34,7 +34,7 @@ class Item(Base):
     def serialize(self):
         """Return object data in easily serializeable format"""
         return {
-            'name': self.name,
+            'itemName': self.name,
             'description': self.description,
             'id': self.id
         }

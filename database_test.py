@@ -1,6 +1,5 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
 from database_setup import Catalog, Item, Base
 
 engine = create_engine('sqlite:///catalog.db')
@@ -19,11 +18,15 @@ DBSession = sessionmaker(bind=engine)
 # session.rollback()
 session = DBSession()
 
+# items = session.query(Item).order_by(Item.id.desc()).limit(10)
+# for item in items:
+#     print(item.serialize)
+
 items = session.query(Item).all()
 for item in items:
-    print("catalog_id: {}, name: {}, item_id: {}".format(
-        item.catalog_id, item.name, item.id))
+    print(item.catalog_id)
 
-catalogs = session.query(Catalog).all()
-for catalog in catalogs:
-    print("catalog_id: {}, name: {}".format(catalog.id, catalog.name))
+# catalogs = session.query(Catalog).all()
+# for catalog in catalogs:
+#     # print("catalog_id: {}, name: {}".format(catalog.id, catalog.name))
+#     print(catalog.serialize)

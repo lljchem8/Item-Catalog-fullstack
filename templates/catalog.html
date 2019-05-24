@@ -1,0 +1,21 @@
+{% extends "main.html" %} {% block content %}
+<div class="catalog-container">
+	<div class="row">
+		<div class="col-sm-3 catalog-list list-group">
+			<h2>Categeries</h2>
+			{% for catalog in catalogs %}
+			<h3 class="list-group-item">{{ catalog.catalogName }}</h3>
+			{% endfor %}
+		</div>
+
+		<div class="col-sm-8 latest-item list-group">
+			<h2>latest-item</h2>
+			{% for item in items%}
+			<h2 class="list-group-item">
+				{{ item.itemName }} ({{ item.catalogName }})
+			</h2>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+{% endblock %}

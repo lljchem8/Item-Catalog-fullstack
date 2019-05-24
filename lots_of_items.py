@@ -20,12 +20,12 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 # item for privary coin
-catalog1 = Catalog(name="smart contract")
+catalog1 = Catalog(catalogName="smart contract")
 
 session.add(catalog1)
 session.commit()
 
-item1 = Item(name="Ethereum", description="""Ethereum is an open-source, public,
+item1 = Item(itemName="Ethereum", description="""Ethereum is an open-source, public,
                  blockchain-based distributed computing platform and operating 
                  system featuring smart contract (scripting) functionality. 
                  It supports a modified version of Nakamoto consensus 
@@ -34,7 +34,7 @@ item1 = Item(name="Ethereum", description="""Ethereum is an open-source, public,
 session.add(item1)
 session.commit()
 
-item2 = Item(name="NEO", description="""NEO (formerly Antshares) was founded in 2014 by 
+item2 = Item(itemName="NEO", description="""NEO (formerly Antshares) was founded in 2014 by 
     Da HongFei and Erik Zhang. NEO is an open-source, 
     community driven platform for decentralized applications. 
     Along with the rebranding from Antshares in 2017, 
@@ -48,12 +48,12 @@ session.commit()
 
 
 # catalog 2
-catalog2 = Catalog(name="privacy coin")
+catalog2 = Catalog(catalogName="privacy coin")
 
 session.add(catalog2)
 session.commit()
 
-item1 = Item(name="Zcash", description="""Zcash is a cryptocurrency aimed at 
+item1 = Item(itemName="Zcash", description="""Zcash is a cryptocurrency aimed at 
     using cryptography to provide enhanced privacy for its users compared 
     to other cryptocurrencies such as Bitcoin. Like Bitcoin, 
         Zcash has a fixed total supply of 21 million units.""", catalog=catalog2)
@@ -61,7 +61,7 @@ item1 = Item(name="Zcash", description="""Zcash is a cryptocurrency aimed at
 session.add(item1)
 session.commit()
 
-item2 = Item(name="Monero", description="""Monero is an open-source cryptocurrency 
+item2 = Item(itemName="Monero", description="""Monero is an open-source cryptocurrency 
                   created in April 2014 that focuses on fungibility, 
                     privacy and decentralization. Monero uses an obfuscated public ledger, 
                     meaning anybody can broadcast or send transactions, 
