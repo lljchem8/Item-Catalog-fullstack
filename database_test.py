@@ -22,11 +22,16 @@ session = DBSession()
 # for item in items:
 #     print(item.serialize)
 
-items = session.query(Item).all()
-for item in items:
-    print(item.catalog_id)
+# items = session.query(Item).all()
+# for item in items:
+#     print(item.catalog_id)
 
 # catalogs = session.query(Catalog).all()
 # for catalog in catalogs:
 #     # print("catalog_id: {}, name: {}".format(catalog.id, catalog.name))
 #     print(catalog.serialize)
+
+catalog = session.query(Catalog).filter_by(
+    catalogName="privacy-coin".replace('-', ' ')).one()
+
+print(catalog.serialize)

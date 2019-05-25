@@ -14,6 +14,8 @@ session = DBSession()
 
 app = Flask(__name__)
 
+# show all catalog
+
 
 @app.route('/')
 @app.route('/catalog')
@@ -24,13 +26,17 @@ def showCatalog():
 
     return render_template("catalog.html", catalogs=catalogs, items=items)
 
-# show all catalog
+# show all items for a specific catalog
 
 
 @app.route('/catalog/<string:name>')
 @app.route('/catalog/<string:name>/items')
-def showCatalogName(name):
-    return "catalog {}".format(name)
+def showCatalogItems(name):
+    catalogs = session.query(Catalog).all()
+    catalog = session.query(Catalog).filter_by(
+        catalogName=name.replace('-', ' ')).one()
+    items = session.query(Item).filter_by(catalog_id=catalog.id).all()
+    return render_template("items.html", catalogs=catalogs, items=items, selected_catalog=catalog)
 
 # add a new catalog
 
@@ -61,9 +67,8 @@ def editCatalog(name):
     else:
         return "not a valid request"
 
-# show the item
 
-
+# show an item
 @app.route('/catalog/<string:catName>/<string:itemName>')
 def showitemName(catName, itemName):
     return "catname {}, itemName {}".format(catName, itemName)

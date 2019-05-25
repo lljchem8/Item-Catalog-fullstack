@@ -16,7 +16,7 @@ class Catalog(Base):
     def serialize(self):
         """Return object data in easily serializeable format"""
         return {
-            'catalogName': self.name,
+            'catalogName': self.catalogName,
             'id': self.id,
         }
 
@@ -34,7 +34,7 @@ class Item(Base):
     def serialize(self):
         """Return object data in easily serializeable format"""
         return {
-            'itemName': self.name,
+            'itemName': self.itemName,
             'description': self.description,
             'id': self.id
         }
