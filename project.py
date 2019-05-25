@@ -69,9 +69,12 @@ def editCatalog(name):
 
 
 # show an item
-@app.route('/catalog/<string:catName>/<string:itemName>')
-def showitemName(catName, itemName):
-    return "catname {}, itemName {}".format(catName, itemName)
+@app.route('/catalog/<string:catalogName>/<string:itemName>')
+def showItemName(catalogName, itemName):
+    item = session.query(Item).filter_by(itemName=itemName).one()
+    catalog = session.query(Catalog).filter_by(
+        catalogName=catalogName.replace('-', ' ')).one()
+    return render_template('item.html', catalogName=catalog.catalogName, item=item)
 
 # create a new item
 
