@@ -11,6 +11,10 @@
 		</div>
 
 		<div class="col-sm-8 latest-item list-group">
+			<a class="btn btn-primary" href="{{ url_for('newItem') }}" role="button"
+				>Add Item</a
+			>
+
 			<h2>latest-item</h2>
 			{% for item in items%}
 			<h2 class="list-group-item">

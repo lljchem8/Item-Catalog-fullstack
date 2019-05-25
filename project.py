@@ -38,16 +38,6 @@ def showCatalogItems(name):
     items = session.query(Item).filter_by(catalog_id=catalog.id).all()
     return render_template("items.html", catalogs=catalogs, items=items, selected_catalog=catalog)
 
-# add a new catalog
-
-
-@app.route('/catalog/new', methods=['GET', 'POST'])
-def newCatalog():
-    if (request.method == 'POST'):
-        return "a new catalog added"
-    else:
-        return "its not a valid post request"
-
 
 # delete a catalog
 @app.route('/catalog/<string:name>/delete', methods=['GET', 'POST'])
@@ -79,12 +69,12 @@ def showItemName(catalogName, itemName):
 # create a new item
 
 
-@app.route('/catalog/<string:catName>/new', methods=['GET', 'POST'])
-def newItem(catName):
+@app.route('/catalog/new', methods=['GET', 'POST'])
+def newItem():
     if (request.method == 'POST'):
-        return "added a new item"
+        return render_template('newItem.html')
     else:
-        return "not a valid post"
+        return render_template('newItem.html')
 
 # edit an item
 
