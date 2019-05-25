@@ -47,16 +47,6 @@ def deleteCatalog(name):
     else:
         return "not a valid post request"
 
-# edit a catalog
-
-
-@app.route('/catalog/<string:name>/edit', methods=['GET', 'POST'])
-def editCatalog(name):
-    if (request.method == 'POST'):
-        return "the catalog has been edited"
-    else:
-        return "not a valid request"
-
 
 # show an item
 @app.route('/catalog/<string:catalogName>/<string:itemName>')
@@ -64,7 +54,7 @@ def showItemName(catalogName, itemName):
     item = session.query(Item).filter_by(itemName=itemName).one()
     catalog = session.query(Catalog).filter_by(
         catalogName=catalogName.replace('-', ' ')).one()
-    return render_template('item.html', catalogName=catalog.catalogName, item=item)
+    return render_template('item.html', item=item, catalog=catalog)
 
 # create a new item
 
@@ -79,12 +69,12 @@ def newItem():
 # edit an item
 
 
-@app.route('/catalog/<string:catName>/<string:itemName>/edit', methods=['GET', 'POST'])
-def editItem(catName, itemName):
+@app.route('/catalog/<string:catalogName>/edit', methods=['GET', 'POST'])
+def editItem(catalogName):
     if (request.method == 'POST'):
-        return "the item has been edited"
+        return render_template('editItem.html')
     else:
-        return "not a valid post"
+        return render_template('editItem.html')
 
 # delete an item
 

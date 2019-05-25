@@ -1,6 +1,15 @@
 {% extends "main.html" %} {% block content %}
-<h2>{{ catalogName }}</h2>
+<h2>{{ item.itemName }}</h2>
 
 <p>{{ item.description }}</p>
+
+<a
+	class="btn btn-primary mb2"
+	role="button"
+	href="{{ url_for('editItem',catalogName=catalog.catalogName) }}"
+>
+	Edit</a
+>
+<button type="submit" class="btn btn-primary mb-2">Delete</button>
 
 {% endblock%}
