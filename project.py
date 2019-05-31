@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, make_response, jsonify, redirect, url_for
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -59,12 +59,22 @@ def showItemName(catalogName, itemName):
 # create a new item
 
 
-@app.route('/catalog/new', methods=['GET', 'POST'])
+@app.route('/catalog/new/', methods=['GET', 'POST'])
 def newItem():
+
     if (request.method == 'POST'):
-        return render_template('newItem.html')
+        catalog = session.query(Catalog).filter_by(
+            catalogName=request.form['catalogname']).one()
+        newItem = Item(itemName=request.form['coinname'], description=request.form['description'],
+                       catalog_id=catalog.id)
+        session.add(newItem)
+        session.commit()
+
+        return redirect(url_for('showCatalog'))
+
     else:
-        return render_template('newItem.html')
+        catalogs = session.query(Catalog).all()
+        return render_template('newItem.html', catalogs=catalogs)
 
 # edit an item
 
