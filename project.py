@@ -39,15 +39,6 @@ def showCatalogItems(name):
     return render_template("items.html", catalogs=catalogs, items=items, selected_catalog=catalog)
 
 
-# delete a catalog
-@app.route('/catalog/<string:name>/delete', methods=['GET', 'POST'])
-def deleteCatalog(name):
-    if (request.method == 'POST'):
-        return "a catalog is deleted"
-    else:
-        return "not a valid post request"
-
-
 # show an item
 @app.route('/catalog/<string:catalogName>/<string:itemName>')
 def showItemName(catalogName, itemName):
@@ -79,22 +70,35 @@ def newItem():
 # edit an item
 
 
-@app.route('/catalog/<string:catalogName>/edit', methods=['GET', 'POST'])
-def editItem(catalogName):
+@app.route('/catalog/<string:catalogName>/<string:itemName>/edit', methods=['GET', 'POST'])
+def editItem(catalogName, itemName):
+    item = session.query(Item).filter_by(itemName=itemName).one()
+    selectedCatalog = session.query(Catalog).filter_by(
+        catalogName=catalogName).one()
+    catalogs = session.query(Catalog).all()
     if (request.method == 'POST'):
-        return render_template('editItem.html')
+        if (request.form['coinname']):
+            item.itemName = request.form['coinname']
+        if (request.form['description']):
+            item.description = request.form['description']
+        session.add(item)
+        session.commit()
+        return redirect(url_for('showCatalog'))
     else:
-        return render_template('editItem.html')
+        return render_template('editItem.html', item=item, selectedCatalog=selectedCatalog, catalogs=catalogs)
 
 # delete an item
 
 
-@app.route('/catalog/<string:catName>/<string:itemName>/delete', methods=['GET', 'POST'])
-def deleteItem(catName, itemName):
+@app.route('/catalog/<string:catalogName>/<string:itemName>/delete', methods=['GET', 'POST'])
+def deleteItem(catalogName, itemName):
+    item = session.query(Item).filter_by(itemName=itemName).one()
     if (request.method == 'POST'):
-        return "the item has been deleted"
+        session.delete(item)
+        session.commit()
+        return redirect(url_for('showCatalog'))
     else:
-        return "not a valid post"
+        return render_template('deleteItem.html', item=item)
 
 
 if __name__ == '__main__':

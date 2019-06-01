@@ -2,23 +2,38 @@
 
 <h1>Edit Item</h1>
 
-<form>
+<form method="POST">
 	<div class="form-group">
 		<label for="ControlInput1">Coin Name</label>
-		<input class="form-control" id="ControlInput1" placeholder="Coin Name" />
+		<input
+			name="coinname"
+			class="form-control"
+			value="{{ item.itemName }}"
+			id="ControlInput1"
+			placeholder="Coin Name"
+		/>
 	</div>
 	<div class="form-group">
 		<label for="ControlInput1">Description</label>
-		<input class="form-control" id="ControlInput2" placeholder="Description" />
+		<input
+			class="form-control"
+			name="description"
+			value="{{ item.description }}"
+			id="ControlInput2"
+			placeholder="Description"
+		/>
 	</div>
 	<div class="form-group">
 		<label for="ControlSelect1">Category</label>
-		<select class="form-control" id="exampleFormControlSelect1">
-			<option>1</option>
-			<option>2</option>
-			<option>3</option>
-			<option>4</option>
-			<option>5</option>
+		<select
+			name="catalogname"
+			class="form-control"
+			value="{{ selectedCatalog.catalogName }}"
+			id="exampleFormControlSelect1"
+		>
+			{%for catalog in catalogs%}
+			<option>{{ catalog.catalogName }}</option>
+			{%endfor%}
 		</select>
 	</div>
 	<button type="submit" class="btn btn-primary mb-2">Submit</button>
