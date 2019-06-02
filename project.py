@@ -14,6 +14,28 @@ session = DBSession()
 
 app = Flask(__name__)
 
+# json for items for a specific catalog
+
+
+@app.route('/catalog/<string:catalogName>/items/JSON')
+def catalogItemsJSON(catalogName):
+    catalog = session.query(Catalog).filter_by(catalogName=catalogName).one()
+    items = session.query(Item).filter_by(
+        catalog_id=catalog.id).all()
+    return jsonify(Items=[i.serialize for i in items])
+
+
+@app.route('/catalog/<string:catalogName>/<string:itemName>/JSON')
+def itemJSON(catalogName, itemName):
+    item = session.query(Item).filter_by(itemName=itemName).one()
+    return jsonify(Item=item.serialize)
+
+
+@app.route('/catalog/JSON')
+def itemsJSON():
+    items = session.query(Item).all()
+    return jsonify(Items=[i.serialize for i in items])
+
 # show all catalog
 
 
