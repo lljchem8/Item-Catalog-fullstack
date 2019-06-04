@@ -34,6 +34,12 @@
 			</h2>
 			{% endfor %}
 		</div>
+		{% if username%}
+		<div>{{ username }}</div>
+		<a class="btn btn-primary" role="button" href="{{ url_for('login') }}">
+			username</a
+		>
+		{%endif%}
 	</div>
 </div>
 {% endblock %}
