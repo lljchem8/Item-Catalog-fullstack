@@ -23,7 +23,7 @@ Then move inside the catalog folder:
 
 Then run the application:
 
-`python application.py`
+`python project.py`
 
 After the last command you are able to browse the application at this URL:
 
