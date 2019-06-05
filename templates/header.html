@@ -17,5 +17,7 @@
 		>
 			Log Out</a
 		>
+
+		{% if 'username' in session %} {{ session["username"] }}{%endif%}
 	</div>
 </div>

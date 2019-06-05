@@ -2,7 +2,7 @@
 <h2>{{ item.itemName }}</h2>
 
 <p>{{ item.description }}</p>
-
+{% if 'username' in session %}
 <a
 	class="btn btn-primary mb2"
 	role="button"
@@ -17,5 +17,4 @@
 >
 	<button class="btn btn-primary mb-2">Delete</button>
 </a>
-
-{% endblock%}
+{%endif%} {% endblock%}

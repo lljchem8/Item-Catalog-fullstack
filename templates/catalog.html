@@ -23,9 +23,12 @@
 		</div>
 
 		<div class="col-sm-8 latest-item list-group">
+			{% if 'username' in session %}
 			<a class="btn btn-primary" href="{{ url_for('newItem') }}" role="button"
 				>Add Item</a
 			>
+
+			{%endif%}
 
 			<h2>latest-item</h2>
 			{% for item in items%}
@@ -34,12 +37,6 @@
 			</h2>
 			{% endfor %}
 		</div>
-		{% if username%}
-		<div>{{ username }}</div>
-		<a class="btn btn-primary" role="button" href="{{ url_for('login') }}">
-			username</a
-		>
-		{%endif%}
 	</div>
 </div>
 {% endblock %}
