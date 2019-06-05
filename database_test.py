@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database_setup import Catalog, Item, Base
+from database_setup import Catalog, Item, Base, User
 
 engine = create_engine('sqlite:///catalog.db')
 # Bind the engine to the metadata of the Base class so that the
@@ -22,16 +22,17 @@ session = DBSession()
 # for item in items:
 #     print(item.serialize)
 
-# items = session.query(Item).all()
-# for item in items:
-#     print(item.catalog_id)
+items = session.query(Item).all()
+for item in items:
+    print(item.user_id)
+
+users = session.query(User).all()
+for user in users:
+    if user.picture:
+        print(user.picture)
+
 
 # catalogs = session.query(Catalog).all()
 # for catalog in catalogs:
 #     # print("catalog_id: {}, name: {}".format(catalog.id, catalog.name))
 #     print(catalog.serialize)
-
-catalog = session.query(Catalog).filter_by(
-    catalogName="privacy-coin".replace('-', ' ')).one()
-
-print(catalog.serialize)

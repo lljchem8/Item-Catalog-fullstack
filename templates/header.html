@@ -18,6 +18,7 @@
 			Log Out</a
 		>
 
-		{% if 'username' in session %} {{ session["username"] }}{%endif%}
+		{% if 'username' in session %} {{ session["username"] }}
+		{{ session["user_id"] }} {{ session["email"] }}{%endif%}
 	</div>
 </div>
