@@ -24,12 +24,12 @@ session = DBSession()
 
 items = session.query(Item).all()
 for item in items:
-    print(item.user_id)
+    print("user id:%s" % item.user_id)
+    print("item name:%s" % item.itemName)
 
 users = session.query(User).all()
 for user in users:
-    if user.picture:
-        print(user.picture)
+    print(user.name)
 
 
 # catalogs = session.query(Catalog).all()

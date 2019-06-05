@@ -2,7 +2,7 @@
 
 from flask import Flask, request, render_template, make_response, jsonify, redirect, url_for, flash
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, or_
 from sqlalchemy.orm import sessionmaker
 from database_setup import Catalog, Item, Base, User
 
@@ -49,10 +49,6 @@ def gconnect():
         return response
     # Obtain authorization code
     code = request.data
-    print(code)
-    print(request)
-    print(request.args)
-    print(1)
     try:
         # Upgrade the authorization code into a credentials object
         oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
@@ -64,7 +60,6 @@ def gconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    print(2)
     # Check that the access token is valid.
     access_token = credentials.access_token
     url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
@@ -77,26 +72,22 @@ def gconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    print(3)
     # Verify that the access token is used for the intended user.
     gplus_id = credentials.id_token['sub']
-    print(credentials)
+
     if result['user_id'] != gplus_id:
         response = make_response(
             json.dumps("Token's user ID doesn't match given user ID."), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    print(4)
     # Verify that the access token is valid for this app.
     if result['issued_to'] != CLIENT_ID:
         response = make_response(
             json.dumps("Token's client ID does not match app's."), 401)
-        print("Token's client ID does not match app's.")
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    print(5)
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
@@ -110,7 +101,6 @@ def gconnect():
 
         return response
 
-    print(6)
     # Store the access token in the session for later use.
     login_session['access_token'] = credentials.access_token
     login_session['gplus_id'] = gplus_id
@@ -139,7 +129,6 @@ def gconnect():
     output += login_session['picture']
     output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     flash("you are now logged in as %s" % login_session['username'])
-    print("hahaha!")
     # return output
     return redirect(url_for('showCatalog', username=login_session['username']))
 
@@ -149,14 +138,10 @@ def gdisconnect():
     access_token = login_session.get('access_token')
     if access_token is None:
         return redirect(url_for('showCatalog'))
-    # print('In gdisconnect access token is %s', access_token)
-    # print('User name is: ')
-    # print(login_session['username'])
+
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
-    # print('result is ')
-    # print(result)
 
     if result['status'] == '200':
         del login_session['access_token']
@@ -219,8 +204,13 @@ def itemsJSON():
 @app.route('/catalog')
 def showCatalog():
     catalogs = session.query(Catalog).all()
-    items = session.query(Item.itemName, Catalog.catalogName).filter(
-        Item.catalog_id == Catalog.id).order_by(Item.id.desc()).limit(3)
+
+    if 'username' in login_session:
+        items = session.query(Item.itemName, Catalog.catalogName).filter(
+            Item.catalog_id == Catalog.id).filter(or_(Item.user_id == 1, Item.user_id == login_session['user_id'])).order_by(Item.id.desc()).limit(3)
+    else:
+        items = session.query(Item.itemName, Catalog.catalogName).filter(
+            Item.catalog_id == Catalog.id).filter(Item.user_id == 1).order_by(Item.id.desc()).limit(3)
 
     return render_template("catalog.html", catalogs=catalogs, items=items)
 
@@ -233,29 +223,51 @@ def showCatalogItems(name):
     catalogs = session.query(Catalog).all()
     catalog = session.query(Catalog).filter_by(
         catalogName=name.replace('-', ' ')).one()
-    items = session.query(Item).filter_by(catalog_id=catalog.id).all()
+    if 'username' in login_session:
+        items = session.query(Item).filter_by(catalog_id=catalog.id).filter(
+            or_(Item.user_id == 1, Item.user_id == login_session['user_id'])).all()
+    else:
+        items = session.query(Item).filter_by(
+            catalog_id=catalog.id).filter_by(user_id=1).all()
     return render_template("items.html", catalogs=catalogs, items=items, selected_catalog=catalog)
 
 
 # show an item
 @app.route('/catalog/<string:catalogName>/<string:itemName>')
 def showItemName(catalogName, itemName):
+    creator = True
+
     item = session.query(Item).filter_by(itemName=itemName).one()
     catalog = session.query(Catalog).filter_by(
         catalogName=catalogName.replace('-', ' ')).one()
-    return render_template('item.html', item=item, catalog=catalog)
+    # local permission, one user can not see other user's content
+    if item.user_id != 1:
+        if 'username' not in login_session or login_session['user_id'] != item.user_id:
+            response = make_response(json.dumps(
+                "you are not allowed to see this page"), 401)
+            response.headers['Content-Type'] = 'application/json'
+            return response
+
+    if 'username' not in login_session or login_session['user_id'] != item.user_id:
+        creator = False
+    return render_template('item.html', item=item, catalog=catalog, creator=creator)
 
 # create a new item
 
 
 @app.route('/catalog/new/', methods=['GET', 'POST'])
 def newItem():
+    if 'username' not in login_session:
+        response = make_response(json.dumps(
+            "you must login first to add new item"), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
 
     if (request.method == 'POST'):
         catalog = session.query(Catalog).filter_by(
             catalogName=request.form['catalogname']).one()
         newItem = Item(itemName=request.form['coinname'], description=request.form['description'],
-                       catalog_id=catalog.id)
+                       catalog_id=catalog.id, user_id=login_session['user_id'])
         session.add(newItem)
         session.commit()
 
@@ -271,6 +283,11 @@ def newItem():
 @app.route('/catalog/<string:catalogName>/<string:itemName>/edit', methods=['GET', 'POST'])
 def editItem(catalogName, itemName):
     item = session.query(Item).filter_by(itemName=itemName).one()
+    if 'username' not in login_session or item.user_id != login_session['user_id']:
+        response = make_response(json.dumps(
+            "you are not allowed to edit this page"), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
     selectedCatalog = session.query(Catalog).filter_by(
         catalogName=catalogName).one()
     catalogs = session.query(Catalog).all()
@@ -290,6 +307,12 @@ def editItem(catalogName, itemName):
 
 @app.route('/catalog/<string:catalogName>/<string:itemName>/delete', methods=['GET', 'POST'])
 def deleteItem(catalogName, itemName):
+    if 'username' not in login_session:
+        response = make_response(
+            json.dumps("you are not allowed to make delete operation"), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
     item = session.query(Item).filter_by(itemName=itemName).one()
     if (request.method == 'POST'):
         session.delete(item)

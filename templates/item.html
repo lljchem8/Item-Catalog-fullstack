@@ -2,7 +2,7 @@
 <h2>{{ item.itemName }}</h2>
 
 <p>{{ item.description }}</p>
-{% if 'username' in session %}
+{% if 'username' in session and creator%}
 <a
 	class="btn btn-primary mb2"
 	role="button"
