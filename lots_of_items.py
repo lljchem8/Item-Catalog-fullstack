@@ -33,22 +33,23 @@ catalog1 = Catalog(catalogName="smart contract")
 session.add(catalog1)
 session.commit()
 
-item1 = Item(user_id=1, itemName="Ethereum", description="""Ethereum is an open-source, public,
-                 blockchain-based distributed computing platform and operating 
-                 system featuring smart contract (scripting) functionality. 
-                 It supports a modified version of Nakamoto consensus 
-                 via transaction-based state transitions.""", catalog=catalog1)
+item1 = Item(user_id=1, itemName="Ethereum", description="""Ethereum is an open-source, public,\
+            blockchain-based distributed computing platform and operating \
+            system featuring smart contract (scripting) functionality. \
+            It supports a modified version of Nakamoto consensus \
+            via transaction-based state transitions.""", catalog=catalog1)
 
 session.add(item1)
 session.commit()
 
-item2 = Item(user_id=1, itemName="NEO", description="""NEO (formerly Antshares) was founded in 2014 by 
-    Da HongFei and Erik Zhang. NEO is an open-source, 
-    community driven platform for decentralized applications. 
-    Along with the rebranding from Antshares in 2017, 
-    the vision to realise a “smart economy” was established. 
-    It is to utilize blockchain technology and digital identity to digitize assets, 
-    smart contracts are employed to automate the management of these digital assets.
+item2 = Item(user_id=1, itemName="NEO", description="""NEO (formerly Antshares) was founded \
+    in 2014 by Da HongFei and Erik Zhang. NEO is an open-source, \
+    community driven platform for decentralized applications. \
+    Along with the rebranding from Antshares in 2017, \
+    the vision to realise a “smart economy” was established. \
+    It is to utilize blockchain technology and digital identity to \
+    digitize assets, smart contracts are employed to automate \
+    the management of these digital assets.\
 """, catalog=catalog1)
 
 session.add(item2)
@@ -68,19 +69,20 @@ catalog2 = Catalog(catalogName="privacy coin")
 session.add(catalog2)
 session.commit()
 
-item1 = Item(user_id=1, itemName="Zcash", description="""Zcash is a cryptocurrency aimed at 
-    using cryptography to provide enhanced privacy for its users compared 
-    to other cryptocurrencies such as Bitcoin. Like Bitcoin, 
-        Zcash has a fixed total supply of 21 million units.""", catalog=catalog2)
+item1 = Item(user_id=1, itemName="Zcash", description="""Zcash is a cryptocurrency aimed at \
+    using cryptography to provide enhanced privacy for its users compared \
+    to other cryptocurrencies such as Bitcoin. Like Bitcoin, \
+    Zcash has a fixed total supply of 21 million units.""", catalog=catalog2)
 
 session.add(item1)
 session.commit()
 
-item2 = Item(user_id=1, itemName="Monero", description="""Monero is an open-source cryptocurrency 
-                  created in April 2014 that focuses on fungibility, 
-                    privacy and decentralization. Monero uses an obfuscated public ledger, 
-                    meaning anybody can broadcast or send transactions, 
-                    but no outside observer can tell the source, amount or destination.""", catalog=catalog2)
+item2 = Item(user_id=1, itemName="Monero", description="""Monero is an open-source cryptocurrency \
+        created in April 2014 that focuses on fungibility, \
+        privacy and decentralization. Monero uses an obfuscated \
+        public ledger, meaning anybody can broadcast or \
+        send transactions, but no outside observer can tell the source,\
+        amount or destination.""", catalog=catalog2)
 
 session.add(item2)
 session.commit()

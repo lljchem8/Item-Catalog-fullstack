@@ -13,6 +13,7 @@ class User(Base):
     name = Column(String(250), nullable=False)
     email = Column(String(250), nullable=False)
     picture = Column(String(250))
+    item = relationship("Item", cascade="save-update, merge, delete")
 
 
 class Catalog(Base):
@@ -20,6 +21,7 @@ class Catalog(Base):
 
     id = Column(Integer, primary_key=True)
     catalogName = Column(String(250), nullable=False)
+    item = relationship("Item", cascade="save-update, merge, delete")
 
     @property
     def serialize(self):

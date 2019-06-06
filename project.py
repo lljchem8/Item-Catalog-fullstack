@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-from flask import Flask, request, render_template, make_response, jsonify, redirect, url_for, flash
+from flask import Flask, request, render_template, make_response,\
+    jsonify, redirect, url_for, flash
 
 from sqlalchemy import create_engine, or_
 from sqlalchemy.orm import sessionmaker
@@ -91,8 +92,8 @@ def gconnect():
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
-                                 200)
+        response = make_response(json.dumps(
+            'Current user is already connected.'), 200)
         response.headers['Content-Type'] = 'application/json'
 
         login_session['access_token'] = credentials.access_token
@@ -121,15 +122,7 @@ def gconnect():
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
 
-    output = ''
-    output += '<h1>Welcome, '
-    output += login_session['username']
-    output += '!</h1>'
-    output += '<img src="'
-    output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     flash("you are now logged in as %s" % login_session['username'])
-    # return output
     return redirect(url_for('showCatalog', username=login_session['username']))
 
 
@@ -206,11 +199,14 @@ def showCatalog():
     catalogs = session.query(Catalog).all()
 
     if 'username' in login_session:
-        items = session.query(Item.itemName, Catalog.catalogName).filter(
-            Item.catalog_id == Catalog.id).filter(or_(Item.user_id == 1, Item.user_id == login_session['user_id'])).order_by(Item.id.desc()).limit(3)
+        items = session.query(Item.itemName, Catalog.catalogName)\
+            .filter(Item.catalog_id == Catalog.id)\
+            .filter(or_(Item.user_id == 1, Item.user_id == login_session['user_id']))\
+            .order_by(Item.id.desc()).limit(3)
     else:
-        items = session.query(Item.itemName, Catalog.catalogName).filter(
-            Item.catalog_id == Catalog.id).filter(Item.user_id == 1).order_by(Item.id.desc()).limit(3)
+        items = session.query(Item.itemName, Catalog.catalogName).\
+            filter(Item.catalog_id == Catalog.id).filter(Item.user_id == 1).\
+            order_by(Item.id.desc()).limit(3)
 
     return render_template("catalog.html", catalogs=catalogs, items=items)
 
@@ -224,8 +220,9 @@ def showCatalogItems(name):
     catalog = session.query(Catalog).filter_by(
         catalogName=name.replace('-', ' ')).one()
     if 'username' in login_session:
-        items = session.query(Item).filter_by(catalog_id=catalog.id).filter(
-            or_(Item.user_id == 1, Item.user_id == login_session['user_id'])).all()
+        items = session.query(Item).filter_by(catalog_id=catalog.id).\
+            filter(or_(Item.user_id == 1, Item.user_id ==
+                       login_session['user_id'])).all()
     else:
         items = session.query(Item).filter_by(
             catalog_id=catalog.id).filter_by(user_id=1).all()
@@ -266,8 +263,10 @@ def newItem():
     if (request.method == 'POST'):
         catalog = session.query(Catalog).filter_by(
             catalogName=request.form['catalogname']).one()
-        newItem = Item(itemName=request.form['coinname'], description=request.form['description'],
-                       catalog_id=catalog.id, user_id=login_session['user_id'])
+        newItem = Item(itemName=request.form['coinname'],
+                       description=request.form['description'],
+                       catalog_id=catalog.id,
+                       user_id=login_session['user_id'])
         session.add(newItem)
         session.commit()
 
@@ -300,20 +299,24 @@ def editItem(catalogName, itemName):
         session.commit()
         return redirect(url_for('showCatalog'))
     else:
-        return render_template('editItem.html', item=item, selectedCatalog=selectedCatalog, catalogs=catalogs)
+        return render_template('editItem.html',
+                               item=item,
+                               selectedCatalog=selectedCatalog,
+                               catalogs=catalogs)
 
 # delete an item
 
 
 @app.route('/catalog/<string:catalogName>/<string:itemName>/delete', methods=['GET', 'POST'])
 def deleteItem(catalogName, itemName):
-    if 'username' not in login_session:
+    item = session.query(Item).filter_by(itemName=itemName).one()
+
+    if 'username' not in login_session or item.user_id != login_session['user_id']:
         response = make_response(
             json.dumps("you are not allowed to make delete operation"), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    item = session.query(Item).filter_by(itemName=itemName).one()
     if (request.method == 'POST'):
         session.delete(item)
         session.commit()

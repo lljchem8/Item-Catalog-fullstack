@@ -26,10 +26,26 @@ items = session.query(Item).all()
 for item in items:
     print("user id:%s" % item.user_id)
     print("item name:%s" % item.itemName)
+    print("item catalog_id:%s" % item.catalog_id)
+    print("----------------------------")
 
-users = session.query(User).all()
-for user in users:
-    print(user.name)
+catalog = session.query(Catalog).filter_by(id=2).one()
+session.delete(catalog)
+session.commit()
+
+print("-------------------after deletion---------------------")
+items = session.query(Item).all()
+for item in items:
+    print("user id:%s" % item.user_id)
+    print("item name:%s" % item.itemName)
+    print("item catalog_id:%s" % item.catalog_id)
+    print("----------------------------")
+
+
+print("--------------------catalog----------------------")
+catalogs = session.query(Catalog).all()
+for catalog in catalogs:
+    print(catalog.id)
 
 
 # catalogs = session.query(Catalog).all()
