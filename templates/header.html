@@ -5,20 +5,25 @@
 			Cryptocurrencies
 		</a>
 	</div>
-	<div class="col-md-6 text-right">
-		<a class="btn btn-primary" role="button" href="{{ url_for('login') }}">
-			Log In</a
-		>
+	<div class="col-md-6 text-right vertical">
+		<div class="vertical">
+			<a class="btn btn-primary" role="button" href="{{ url_for('login') }}">
+				Log In</a
+			>
 
-		<a
-			class="btn btn-primary"
-			role="button"
-			href="{{ url_for('gdisconnect') }}"
-		>
-			Log Out</a
-		>
-
-		{% if 'username' in session %} {{ session["username"] }}
-		{{ session["user_id"] }} {{ session["email"] }}{%endif%}
+			<a
+				class="btn btn-primary"
+				role="button"
+				href="{{ url_for('gdisconnect') }}"
+			>
+				Log Out</a
+			>
+		</div>
+		<div class="vertical">
+			<div class="picture">
+				{% if 'username' in session %} <img src="{{ session["picture"] }}"
+				class="img-circle" alt="picture" height="80" width="80"> {%endif%}
+			</div>
+		</div>
 	</div>
 </div>

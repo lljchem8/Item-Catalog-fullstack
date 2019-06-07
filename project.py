@@ -132,7 +132,8 @@ def gdisconnect():
     if access_token is None:
         return redirect(url_for('showCatalog'))
 
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s'\
+        % login_session['access_token']
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
 
@@ -201,7 +202,8 @@ def showCatalog():
     if 'username' in login_session:
         items = session.query(Item.itemName, Catalog.catalogName)\
             .filter(Item.catalog_id == Catalog.id)\
-            .filter(or_(Item.user_id == 1, Item.user_id == login_session['user_id']))\
+            .filter(or_(Item.user_id == 1,
+                        Item.user_id == login_session['user_id']))\
             .order_by(Item.id.desc()).limit(3)
     else:
         items = session.query(Item.itemName, Catalog.catalogName).\
@@ -226,7 +228,10 @@ def showCatalogItems(name):
     else:
         items = session.query(Item).filter_by(
             catalog_id=catalog.id).filter_by(user_id=1).all()
-    return render_template("items.html", catalogs=catalogs, items=items, selected_catalog=catalog)
+    return render_template("items.html",
+                           catalogs=catalogs,
+                           items=items,
+                           selected_catalog=catalog)
 
 
 # show an item
@@ -239,15 +244,20 @@ def showItemName(catalogName, itemName):
         catalogName=catalogName.replace('-', ' ')).one()
     # local permission, one user can not see other user's content
     if item.user_id != 1:
-        if 'username' not in login_session or login_session['user_id'] != item.user_id:
+        if 'username' not in login_session or \
+                login_session['user_id'] != item.user_id:
             response = make_response(json.dumps(
                 "you are not allowed to see this page"), 401)
             response.headers['Content-Type'] = 'application/json'
             return response
 
-    if 'username' not in login_session or login_session['user_id'] != item.user_id:
+    if 'username' not in login_session or \
+            login_session['user_id'] != item.user_id:
         creator = False
-    return render_template('item.html', item=item, catalog=catalog, creator=creator)
+    return render_template('item.html',
+                           item=item,
+                           catalog=catalog,
+                           creator=creator)
 
 # create a new item
 
@@ -279,10 +289,12 @@ def newItem():
 # edit an item
 
 
-@app.route('/catalog/<string:catalogName>/<string:itemName>/edit', methods=['GET', 'POST'])
+@app.route('/catalog/<string:catalogName>/<string:itemName>/edit',
+           methods=['GET', 'POST'])
 def editItem(catalogName, itemName):
     item = session.query(Item).filter_by(itemName=itemName).one()
-    if 'username' not in login_session or item.user_id != login_session['user_id']:
+    if 'username' not in login_session or\
+            item.user_id != login_session['user_id']:
         response = make_response(json.dumps(
             "you are not allowed to edit this page"), 401)
         response.headers['Content-Type'] = 'application/json'
@@ -307,11 +319,13 @@ def editItem(catalogName, itemName):
 # delete an item
 
 
-@app.route('/catalog/<string:catalogName>/<string:itemName>/delete', methods=['GET', 'POST'])
+@app.route('/catalog/<string:catalogName>/<string:itemName>/delete',
+           methods=['GET', 'POST'])
 def deleteItem(catalogName, itemName):
     item = session.query(Item).filter_by(itemName=itemName).one()
 
-    if 'username' not in login_session or item.user_id != login_session['user_id']:
+    if 'username' not in login_session or \
+            item.user_id != login_session['user_id']:
         response = make_response(
             json.dumps("you are not allowed to make delete operation"), 401)
         response.headers['Content-Type'] = 'application/json'
